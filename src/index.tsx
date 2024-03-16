@@ -1,7 +1,11 @@
 import * as esbuild from 'esbuild-wasm';
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { useEffect, useRef, useState } from "react";
 import { unpkgPathPlugin } from './plugins/unpkgPathPlugin';
+
+const el = document.getElementById('root');
+
+const root = ReactDOM.createRoot(el!)
 
 const App = () => {
     const [input, setInput] = useState('');
@@ -28,7 +32,7 @@ const App = () => {
             entryPoints: ['index.js'],
             bundle: true,
             write: false,
-            plugins: [unpkgPathPlugin()],
+            plugins: [unpkgPathPlugin(input)],
             define: {
                 'process.env.NODE_ENV': '"development"',
                 global: 'window'
@@ -49,7 +53,4 @@ const App = () => {
     )
 }
 
-ReactDOM.render(
-    <App />,
-    document.querySelector('#root')
-)
+root.render(<App />)
