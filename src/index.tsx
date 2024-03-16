@@ -20,7 +20,7 @@ const App = () => {
     }, [])
 
     const onClick = async () => {
-        if(!ref.current) {
+        if (!ref.current) {
             return;
         }
 
@@ -29,9 +29,11 @@ const App = () => {
             bundle: true,
             write: false,
             plugins: [unpkgPathPlugin()],
+            define: {
+                'process.env.NODE_ENV': '"development"',
+                global: 'window'
+            }
         })
-
-        // console.log(result)
 
         setCode(result.outputFiles[0].text)
     }
