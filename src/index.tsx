@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { unpkgPathPlugin } from './plugins/unpkgPathPlugin';
 import { fetchPlugin } from './plugins/fetchpulgin';
 
+import CodeEditor from './components/code-editor';
+
 const el = document.getElementById('root');
 
 const root = ReactDOM.createRoot(el!)
@@ -70,6 +72,10 @@ const App = () => {
 
     return (
         <div>
+            <CodeEditor
+                initialValue=''
+                onChange={(value) => setInput(value)}
+            />
             <textarea value={input} onChange={e => setInput(e.target.value)}></textarea>
             <div>
                 <button onClick={onClick}>Submit</button>
