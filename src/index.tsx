@@ -10,7 +10,6 @@ const root = ReactDOM.createRoot(el!)
 
 const App = () => {
     const [input, setInput] = useState('');
-    const [code, setCode] = useState('');
     const ref = useRef<any>();
     const iframe = useRef<any>();
 
@@ -30,6 +29,8 @@ const App = () => {
             return;
         }
 
+        iframe.current.srcDoc = html;
+
         const result = await ref.current.build({
             entryPoints: ['index.js'],
             bundle: true,
@@ -44,7 +45,6 @@ const App = () => {
             }
         })
 
-        // console.log(iframe.current.contentWindow)
         iframe.current.contentWindow.postMessage(result.outputFiles[0].text, '*')
     }
 
@@ -55,7 +55,13 @@ const App = () => {
             <div id="root"></div>
             <script>
                 window.addEventListener('message', (event) => {
-                    eval(event.data);
+                    try {
+                        eval(event.data);
+                    }catch(err) {
+                        const root = document.querySelector('#root');
+                        root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>'
+                        throw err;
+                    }
                 }, false)
             </script>
         </body>
@@ -68,8 +74,7 @@ const App = () => {
             <div>
                 <button onClick={onClick}>Submit</button>
             </div>
-            <pre>{code}</pre>
-            <iframe ref={iframe} sandbox='allow-scripts' srcDoc={html} />
+            <iframe title='preview' ref={iframe} sandbox='allow-scripts' srcDoc={html} />
         </div>
     )
 
